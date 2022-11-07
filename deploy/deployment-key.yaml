@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-scan-api
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-scan-api
+  template:
+    metadata:
+      labels:
+        app: image-scan-api
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: image-scan-api
+        image: asia.gcr.io/image-scan:v1.0
+        ports:
+        - containerPort: 5000
+          name: uat-rundeck 
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/run/secret/cloud.google.com/image-scan.json
+        resources:
+          limits:
+            cpu: 2
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        volumeMounts:
+          - name: google-cloud-key
+            mountPath: /var/run/secret/cloud.google.com
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: image-scan-key

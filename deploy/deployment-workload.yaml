@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-scan-api
+  namespace: default
+spec:
+  serviceAccountName: image-scan-api-service-account
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-scan-api
+  template:
+    metadata:
+      labels:
+        app: image-scan-api
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: image-scan-api
+        image: asia.gcr.io/image-scan:v1.0
+        ports:
+        - containerPort: 5000
+          name: image-scan-api
+        resources:
+          limits:
+            cpu: 2
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
